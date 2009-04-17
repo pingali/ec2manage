@@ -1,0 +1,24 @@
+#!/bin/sh
+
+#NOTE: you can also call 
+#      /usr/local/ec2onrails/bin/exec_runner
+#      to run a script under a specific role
+#      see the file for details
+
+cd /mnt/app/current
+
+if test -e /mnt/app/current/script/cron/weekly; then 
+   if test -f /mnt/app/current/script/cron/weekly; then 
+      sudo -u app /usr/local/ec2onrails/bin/rails_env script/cron/weekly;
+   else 
+      sudo -u app /usr/local/ec2onrails/bin/rails_env script/cron/weekly/*;
+   fi
+   exit 0;
+fi
+
+#DEPRECATED: just for old usage....
+if test -e /mnt/app/current/script/weekly
+then 
+   sudo -u app /usr/local/ec2onrails/bin/rails_env script/weekly
+   exit 0;
+fi

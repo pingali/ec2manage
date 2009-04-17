@@ -1,0 +1,48 @@
+http://blog.dbadojo.com/2007/11/sysbench-vs-mysql-on-ec2.html
+
+How to install sysbench on EC2:
+
+   1. yum -y install sysstat gcc
+   2. cd /mnt
+   3. wget http://optusnet.dl.sourceforge.net/sourceforge/sysbench/sysbench-0.4.8.tar.gz
+   4. tar -xzvf sysbench-0.4.8.tar.gz
+   5. cd sysbench-0.4.8
+   6. ./configure
+   7. make
+   8. make install
+
+Running sysbench against MySQL on EC2:
+
+   1. install MySQL 5.1
+   2. cp /usr/local/mysql-5.1.20-beta-linux-i686-glibc23/support-files/my-large.cnf /etc/my.cnf
+   3. service mysql.server start
+   4. export LD_LIBRARY_PATH=/usr/local/mysql-5.1.20-beta-linux-i686-glibc23/lib/
+   5. sysbench help
+   6. mysqladmin -u root -pyourpasswordhere create database sbtest
+   7. sysbench --test=oltp --mysql-table-engine=myisam --oltp-table-size=1000000 --mysql-user=root --mysql-password=yourpasswordhere prepare
+   8. sysbench --num-threads=16 --max-requests=100000 --test=oltp --oltp-table-size=1000000 --mysql-user=root --mysql-password=yourpassword --oltp-read-only run
+   9. sysbench --num-threads=16 --max-requests=100000 --test=oltp --oltp-table-size=1000000 --mysql-user=root --mysql-password=yourpassword cleanup
+
+
+Results:
+
+   1. Table-size=1000000, Threads= {2,4,6,8,10,12,16}: Avg transactions: 100000 (126.06 per sec.)
+   2. Table-size=100000, Threads= {2,4,8,16}: Avg transactions: 100000 (411.74 per sec.)
+   3. Table-size=50000, Threads= {4,8,16}: Avg transactions: 100000 (125.59 per sec.)
+
+
+Comments:
+
+   1. Given that the table size seems to have a big impact on the transaction performance, it would suggest that tuning the size of cache (key and sort) should make a difference. The jury is still out on that.
+   2. Some of the sql running appeared in the slow-query.log at the default settings. The main culprit is as always, a range scan on a index followed by a filesort.
+
+
+Coming soon:
+
+   1. Repeat runs using difference storage engines.
+   2. Further investigation on changing various memory and sort system variables.
+   3. Repeating the tests for various table sizes.
+
+
+The whole aim of this series of articles on benchmarks is the determine the optimal design for databases in general on EC2. Once we have a reports from varied sources of benchmarking tools, we can get closer to knowing the appropriate size and design of databases using EC2.
+

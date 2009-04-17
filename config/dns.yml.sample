@@ -1,0 +1,24 @@
+#
+# domainname: generally not used 
+# username: used to login to dnsmadeeasy
+# hosts
+#   dns alias 
+#     this alias's ddns id 
+#     this alias's password 
+#   ...
+domainname: myfavoritedomain.com
+username: myname
+hosts:
+  www:
+    ddns_id: 19827238
+    ddns_password: dgkjfdgjfdg
+  admin:
+    ddns_id: 8239221
+    ddns_password: dgkjfdgjfdg
+  dbmaster: 
+    ddns_id: 239809834
+    ddns_password: dfjjdsfkljdf
+  dbmaster-int: 
+    ddns_id: 4938940328
+    ddns_password: fdkjfdk
+

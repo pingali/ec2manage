@@ -1,0 +1,18 @@
+
+# Example of user-data that should uploaded during deployment of a new
+# instance from the console or through the command line.  The
+# following scripts use user-data. So make sure to check them before
+# modifying this structure:
+# 
+#     /usr/local/ec2onrails/bin/automount-ebs.rb 
+
+---
+aws_access_key_id: jhsdfjhdsfjh128782137abdja
+aws_secret_access_key: jhsdfjhdsfjh128782137abdja
+ebs_volumes: 
+ - dev: /dev/sdh 
+   vol_id: vol-172518
+   mount_point: /var/local 
+ - dev: /dev/sdi
+   vol_id: vol-121222
+   mount_point: /mnt/local

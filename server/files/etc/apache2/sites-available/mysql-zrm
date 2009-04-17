@@ -1,0 +1,24 @@
+
+# This can give RSS feed from the server regarding the status of the
+# backup operations.
+
+listen 127.0.0.1:18001
+<VirtualHost 127.0.0.1:18001>
+
+  ServerName www.myfavoritedomain.com
+  DocumentRoot /var/local/mnt/www/mysql-zrm/reports/html
+  ServerSignature Off
+
+<Directory "/var/local/www/mysql-zrm/reports/html">
+  Options FollowSymLinks
+  AllowOverride None
+  Order allow,deny
+  Allow from all
+</Directory>
+
+  ErrorLog /mnt/log/apache2/mysql-zrm.error.log
+  LogLevel warn
+
+  CustomLog /mnt/log/apache2/mysql-zrm.access.log combined
+
+</VirtualHost>

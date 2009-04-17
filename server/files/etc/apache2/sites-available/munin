@@ -1,0 +1,26 @@
+listen 127.0.0.1:18002
+<VirtualHost 127.0.0.1:18002>
+  ServerAdmin root@localhost
+  DocumentRoot /mnt/www/munin
+
+  <Directory /mnt/www/munin>
+    Options FollowSymLinks
+    AllowOverride None
+
+    #
+    #authentification
+    AuthType Basic
+    AuthName "Munin Authorized User"
+    AuthUserFile  /etc/apache2/htpasswd
+    require valid-user
+  </Directory>
+
+
+  # Possible values include: debug, info, notice, warn, error, crit,
+  # alert, emerg.
+  LogLevel notice
+  CustomLog /mnt/log/apache2/munin.access.log combined
+  ErrorLog /mnt/log/apache2/munin.error.log
+  ServerSignature On
+  
+</VirtualHost>

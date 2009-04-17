@@ -1,0 +1,36 @@
+#!/bin/sh
+
+#NOTE: you can also call 
+#      /usr/local/ec2onrails/bin/exec_runner
+#      to run a script under a specific role
+#      see the file for details
+
+FREQUENCY=monthly
+MYAPP1=/mnt/www/myfavorite-app1/current
+MYAPP2=/mnt/www/myfavorite-app2/current
+MYAPP2_CRON=$MYAPP2/script/cron/$FREQUENCY
+MYAPP1_CRON=$MYAPP1/script/cron/$FREQUENCY
+
+if [ -e $MYAPP1 ]; then
+    if test -e $MYAPP1_CRON; then 
+	if test -f $MYAPP1_CRON; then 
+	    sudo -u app /usr/local/ec2onrails/bin/rails_env $MYAPP1_CRON
+	else 
+	    sudo -u app /usr/local/ec2onrails/bin/rails_env $MYAPP1_CRON/*;
+	fi
+    fi
+fi
+
+
+if [ -e $MYAPP2 ]; then
+    if test -e $MYAPP2_CRON; then 
+	if test -f $MYAPP2_CRON;  then 
+	    sudo -u app /usr/local/ec2onrails/bin/rails_env $MYAPP2_CRON
+	else 
+	    sudo -u app /usr/local/ec2onrails/bin/rails_env $MYAPP2_CRON/*;
+	fi
+    fi
+fi
+
+
+

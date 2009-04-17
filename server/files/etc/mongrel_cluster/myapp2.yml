@@ -1,0 +1,9 @@
+--- 
+cwd: /mnt/www/myfavorite-app2/current
+port: "8010"
+environment: production
+pid_file: log/mongrel.pid
+servers: 2
+daemon: true
+user: app
+group: app

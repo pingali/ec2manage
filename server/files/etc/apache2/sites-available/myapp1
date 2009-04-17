@@ -1,0 +1,17 @@
+# Based on http://blog.codahale.com/2006/06/19/time-for-a-grown-up-server-rails-mongrel-apache-capistrano-and-you/
+
+NameVirtualHost *:80
+<VirtualHost *:80>
+
+  ServerName www.myfavoritedomain.com
+  DocumentRoot /mnt/www/myfavorite-app1/current/public
+
+  Include /etc/apache2/sites-available/myfavorite-app1.custom
+  Include /etc/apache2/sites-available/myfavorite-app1.common
+
+  ErrorLog /mnt/log/apache2/myfavorite-app1.error.log
+  LogLevel warn
+
+  CustomLog /mnt/log/apache2/myfavorite-app1.access.log combined
+
+</VirtualHost>

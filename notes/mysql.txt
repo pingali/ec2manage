@@ -1,0 +1,138 @@
+
+show all information 
+mysql --defaults-file=master/my.sandbox.cnf  -u root -e "show processlist\G"
+
+Without debug information: 
+mk-slave-find --defaults-file=master/my.sandbox.cnf 
+
+with debug information: 
+MKDEBUG=1 mk-slave-find --defaults-file=master/my.sandbox.cnf 
+
+
+=====================================================
+http://www.pythian.com/blogs/300/mysql-recipes-promoting-a-slave-to-master-or-changing-masters
+
+On Master:
+
+   1. FLUSH LOGS;
+
+On Slave:
+
+   1. STOP SLAVE;
+   2. RESET MASTER;
+   3. Optional: CHANGE MASTER TO MASTER_HOST='';
+
+------------------
+
+
+Capistrano commands for the following: 
+
+Perform a clean, full system shutdown: 
+
+   1. Disable application writes (and reads). This step will depend on
+      your particular application. A typical scenario would be to put
+      up a "maintenance" page, and bring down your app (in all
+      existing instances).
+
+   2. Disable or enable continuous backups
+
+   3. (Optional) Take a last backup of the DB if appropriate.  Backup
+      Master-DB
+
+   4. Stop your slave instance (or instances). Click on the "stop"
+      button next to their component (if you're using deployments), or
+      click on the "stop" icon on their instance page.
+
+   5. Stop your master instance. (Click on the "stop" button in the
+      same way as described for the slaves.)
+
+Launch a new Master DB 
+
+When you launch a new master DB instance, it will be initialized with
+the contents from the most recent backup in S3.  The server template
+will choose the backup file that matches the S3 bucket name and key
+that's specified by the server template's input variables:
+BACKUP_S3_BUCKET and BACKUPFILE_PREFIX.  If there are multiple
+matches, the most recent backup file will be chosen.  The most recent
+backup file will have the latest appended number, which corresponds to
+the date it was taken.
+
+If no matching files exist, the boot process will fail and manual
+initialization of the DB will be required. This latter case should
+only happen the first time you boot the master DB. Manual installation
+of the initial DB contents is explained in Initialize master DB
+contents.
+
+Launch a new Slave DB 
+
+After simply launching a slave template the DB is still empty and not
+connected to the master. Contents initialization and replication start
+needs to be executed as a separate action.
+
+Reinitialize Master-DB contents
+
+Connect to the active master DB instance. How?
+ - Access the running instances page (Manage -> Servers)
+ - Click on the "console" icon ssh_console_icon.gif to open a direct Unix SSH console to the running instance
+
+# Download the initial DB contents into the local disk (i.e., /mnt/ ). How?
+ - Perhaps from S3 (e.g., set the environment variables and use s3cmd)
+ - ...or perhaps from another instance (e.g., using scp or rsync)
+
+# Install the downloaded contents into the MySQL server. How?
+ - By creating the schema and applying the MySQL dump file (if that's the format of the download)
+ - ...or perhaps by replacing the base directory if the downloaded contents are in binary format.
+
+Initialize Slave DB from Master DB 
+
+Snapshot the master < is this LVM snapshot or DBdump? 
+Instantiate the slave using the snapshot 
+
+Promoting Slave DB to Master DB 
+
+Promoting a slave DB to be the new master involves syncing up DB
+contents and switching DNS entries. After the promotion is done, the
+new master will acquire the master DNS entry, and the old master (if
+it's alive) will acquire the slave DNS one. The old master (if it's
+alive) will be demoted to a slave, and will be in sync and replicating
+from the new one.
+
+
+Backup Master-DB
+
+After the backup is completed, a new tar file will be placed onto S3,
+according to the bucket name and file prefix defined in the server
+template's input variables (BACKUP_S3_BUCKET and
+BACKUPFILE_PREFIX). The complete filename of the backup will have the
+date appended to the specified prefix. (Ex: mybackup-
+200709081143.tar, where BACKUPFILE_PREFIX = myBackup) Date and times
+are in UTC format, which makes it easy sort and locate the times of
+the existing backup files.
+
+NOTE: The time for a backup to complete widely varies depending on the
+size of the DB, and the activity on the DB.
+
+Restore a previous backup 
+
+By default, the most recent backup file in the backups directory will
+be used to restore the database.  You can also manually restore a
+particular file with a few extra steps, which are highlighted with **.
+
+For security purposes, you are not allowed to restore a backup onto a
+DB instance that already contains a database. Therefore, make sure to
+have an empty DB or to manually drop any existing databases from the
+instance before performing the "DB master restore" operational
+action. The time required to perform a restoration of the database
+will vary depending on its size.
+
+
+
+Disable or Enable Continuous Backups
+
+   1. Go to the running instances page.  (Manage -> Servers)
+   2. Click on the nickname of the DB instance where you want to disable/enable continuous backups.
+   3. Click on the Actions tab. 
+      To disable continuous backups, click on the DB freeze binary backups operational button.
+      To enable continuous backups, click on the DB unfreeze binary backups operational button.
+   4. Wait until the action is successfully completed.
+

@@ -1,0 +1,81 @@
+
+#Overall design 
+1. Think through the design
+http://jineshvaria.s3.amazonaws.com/public/cloudarchitectures-varia.pdf
+
+# Application
+1. Check why http://admin is redirected to http://admin...
+2. Check if rsync -uav preserves timestamps during initialization
+   of the host
+3. Commandline arg based switch to handle runtime mode of deployment
+   and local its correcponding configurations
+
+#EC2 
+1. Add capistrano command to deploy an instance from the command
+line
+2. Use a separate key name for each instance and use the key to 
+indicate the type of the machine
+3. Dynamically discover the machines in the network
+http://gist.github.com/86265
+4. Support for free Cloudkick and Tapin (non-free) monitoring service 
+http://www.tapinsystems.com
+https://www.cloudkick.com/
+5. Add support for user-data during deployment 
+6. Remove AWS credentials from the instance and provide them as user-data
+that is decrypted on the fly using the private key uploaded to 
+the machine
+6. Bundling of an entire volume as a master or slave AMI
+7. Test a bundled instance/snapshot/volume
+
+#SMTP 
+1. Get the mailing working 
+use postfix configuration file 
+AUTHSMTP account
+
+# Apache
+1. Bandwidth throtting - not a high priority right now 
+http://www.howtoforge.com/mod_cband_apache2_bandwidth_quota_throttling
+
+# MySQL 
+1. Automatic configuration of the slave 
+2. Support for striping/volume management - split the database across 
+   multiple volumes. Instructions here: 
+http://gist.github.com/86260
+3. 
+
+# Backups/EBS 
+1. zrm backups are in /mnt/mysql-zrm/backup. They have to be
+   copied to S3 and/or another volume. 
+2. Restore needs to be completed and verified 
+3. volumeid in /etc/ec2onrails/ec2_ebs.yml is empty -FIXED
+4. Change the DB root password - ask for it during deployment
+5. Hardcoded restore directory. Generalize the code. 
+6. Automount EBS volume upon boot
+http://gist.github.com/86258
+   
+
+# God 
+1. god is putting out gobs of messages in /mnt/log/debug. Fix it! 
+2. God is sending a restart message to the processes when it
+   starts! Check this to write the scripts correctly 
+   http://god.rubyforge.org/
+   Wonder if it is ok.  - FIXED 
+
+# Webserver 
+1. Need to able to enable/disable through the capistrano script
+2. myfavorite-app1.ssl and myfavorite-app2.ssl are conflicting! Fix the 
+   /etc/apache2 configuration 
+
+# Source code
+1. Daily syncing of the code? 
+
+# Splunk 
+1. How to perform regular monitoring? 
+
+# Status information
+1. Command to get the running status of the server and the processes
+
+# Log files 
+1. Have to move them around. Where? 
+
+# 

@@ -1,0 +1,29 @@
+#!/bin/sh
+
+RAILS_ENV=`/usr/local/ec2onrails/bin/rails_env`
+MYAPP1=/mnt/www/myfavorite-app1/current
+MYAPP2=/mnt/www/myfavorite-app2/current
+
+if [ -e $MYAPP1 ]; then 
+  logfile=$MYAPP1/log/$RAILS_ENV.log-`date +%Y%m%d`
+  if [ -e $logfile ] ; then
+    gzip $logfile
+    /usr/local/ec2onrails/bin/archive_file.rb --file $logfile.gz --dir logs/rails/myfavorite-app1 && rm $logfile.gz
+  fi
+fi
+
+if [ -e $MYAPP2 ]; then 
+  logfile=$MYAPP2/log/$RAILS_ENV.log-`date +%Y%m%d`
+  if [ -e $logfile ] ; then
+    gzip $logfile
+    /usr/local/ec2onrails/bin/archive_file.rb --file $logfile.gz --dir logs/rails/myfavorite-app2 && rm $logfile.gz
+  fi
+fi
+
+for f in `ls /mnt/log/web_proxy/*.log` ; do
+  logfile=$f-`date +%Y%m%d`
+  if [ -e $logfile ] ; then
+    gzip $logfile
+    /usr/local/ec2onrails/bin/archive_file.rb --file $logfile.gz --dir logs/web_proxy && rm $logfile.gz
+  fi
+done

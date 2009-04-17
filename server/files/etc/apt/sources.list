@@ -1,0 +1,18 @@
+
+deb http://ec2-us-east-mirror.rightscale.com/ubuntu hardy main restricted universe multiverse
+deb http://ec2-us-east-mirror.rightscale.com/ubuntu hardy-updates main restricted universe multiverse
+deb http://security.ubuntu.com/ubuntu hardy-security main restricted universe multiverse 
+
+deb http://ec2-us-east-mirror.rightscale.com/ubuntu intrepid main restricted universe multiverse
+deb http://ec2-us-east-mirror.rightscale.com/ubuntu intrepid-updates main restricted universe multiverse
+deb http://security.ubuntu.com/ubuntu intrepid-security main restricted universe multiverse 
+
+deb http://us.archive.ubuntu.com/ubuntu hardy main restricted universe multiverse
+deb-src http://us.archive.ubuntu.com/ubuntu hardy main restricted universe multiverse
+
+deb http://us.archive.ubuntu.com/ubuntu hardy-updates main restricted universe multiverse
+deb-src http://us.archive.ubuntu.com/ubuntu hardy-updates main restricted universe multiverse
+
+deb http://security.ubuntu.com/ubuntu hardy-security main restricted universe multiverse
+deb-src http://security.ubuntu.com/ubuntu hardy-security main restricted universe multiverse
+

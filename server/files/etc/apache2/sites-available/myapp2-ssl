@@ -1,0 +1,21 @@
+# Based on http://blog.codahale.com/2006/06/19/time-for-a-grown-up-server-rails-mongrel-apache-capistrano-and-you/
+
+NameVirtualHost *:443
+<VirtualHost *:443>
+
+  ServerName app2.myfavoritedomain.com
+
+  Include /etc/apache2/sites-available/myfavorite-app2.custom
+  Include /etc/apache2/sites-available/myfavorite-app2.common
+
+  ErrorLog /mnt/log/apache2/myfavorite-app2.error.log
+  LogLevel warn
+
+  CustomLog /mnt/log/apache2/myfavorite-app2.access.log combined
+
+  # see http://httpd.apache.org/docs/2.2/ssl/ssl_intro.html and http://httpd.apache.org/docs/2.2/mod/mod_ssl.html
+  SSLEngine On
+  SSLCertificateFile    /etc/ssl/files/myfavoritedomain.com.crt
+  SSLCertificateKeyFile /etc/ssl/files/myfavoritedomain.com.pem
+  RequestHeader set X_FORWARDED_PROTO 'https'
+</VirtualHost>

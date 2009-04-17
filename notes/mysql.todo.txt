@@ -1,0 +1,31 @@
+
+These are the goals of the setup: 
+
+ 1. launch database instance
+
+     allow setting as a master or a slave 
+
+ 2. restore from S3 backup and configure as master
+  
+     deploy a master and restore the db? 
+
+ 3. configure as slave, using DB transfer from master for initial state
+     
+     how to do db transfer? copy the entire volume? 
+
+ 4. promote slave to master
+
+     configuration file changes and restart? 
+
+ 5. backup to S3
+  
+     this has to be enabled on the slave role? 
+
+ 6. daily backups to S3 from master
+ 
+     already taken care of
+
+ 7. 10-minute backups to S3 from slave
+
+     already taken care of
+

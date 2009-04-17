@@ -1,0 +1,112 @@
+
+Package: 
+wget -o /tmp/maatkit.deb http://maatkit.googlecode.com/files/maatkit_2979-1_all.deb 
+dpkg -i /tmp/maatkit.deb
+
+# Tutorial on setting up maatkit checksum 
+http://www.paragon-cs.com/tutorials/mk-table-checksum_tutorial.pdf
+
+# SQL command to create a checksum file
+maatkit-checksum.sql 
+use ec2manage_production;
+CREATE TABLE `checksum` (
+`db` char(64) NOT NULL,
+`tbl` char(64) NOT NULL,
+`chunk` int(11) NOT NULL,
+`boundaries` char(64) NOT NULL,
+`this_crc` char(40) NOT NULL,
+`this_cnt` int(11) NOT NULL,
+`master_crc` char(40) default NULL,
+`master_cnt` int(11) default NULL,
+`ts` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+PRIMARY KEY (`db`,`tbl`,`chunk`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+#############################################################
+# Setup 
+#############################################################
+#
+# mk commands to set up replication - example
+# Compute the checksum on 500K row tables;
+mk-table-checksum chunksize 500000 --createreplicate --replicate=ec2manage_production.checksum localhost
+mk-table-checksum --socket=/tmp/mysql_sandbox11000.sock h=localhost,u=root,p=msandbox --replicate=jg_repl_test.checksum
+
+# Check the checksum table
+mysql -u root -p -e "select * from ec2manage_production.checksum;"
+
+#############################################################
+# Check on slave 
+#############################################################
+
+# On Slave ; print inconsistent tables
+mk-table-checksum chunksize 500000 --replicate=ec2manage_production.checksum --replcheck 1
+
+# On Slave ; save inconsistent tables
+mk-table-checksum chunksize 500000 --replicate=ec2manage_production.checksum --replcheck 0
+
+# Output of the above two commands looks like this..
+Differences on S=/tmp/mysql_sandbox11001.sock,h=localhost,p=...,u=root
+DB    TBL         CHUNK CNT_DIFF CRC_DIFF BOUNDARIES
+mysql general_log     0        0        1 1=1
+mysql slow_log        0        0        1 1=1
+
+# If there is a difference in the slave and master if gets shown as 
+#
+Differences on S=/tmp/mysql_sandbox11001.sock,h=localhost,p=...,u=root
+DB           TBL         CHUNK CNT_DIFF CRC_DIFF BOUNDARIES
+jg_repl_test hello           0    >>>>1<<<     1 1=1 
+mysql        general_log     0        0        1 1=1
+mysql        slow_log        0        0        1 1=1
+
+# The same result as above can be obtained by the following query
+SELECT db, tbl, chunk, this_cnt-master_cnt AS cnt_diff,
+     this_crc <> master_crc OR ISNULL(master_crc) <> ISNULL(this_crc)
+        AS crc_diff
+  FROM ec2manage_production.checksum
+  WHERE master_cnt <> this_cnt OR master_crc <> this_crc
+     OR ISNULL(master_crc) <> ISNULL(this_crc);
+
+==================================================================
+Example setup from an existing setup
+
+http://drupal.star.bnl.gov/STAR/comp/db/repl/tools
+
+CREATE DATABASE repl;
+CREATE TABLE checksum (
+     db         char(64)     NOT NULL,
+     tbl        char(64)     NOT NULL,
+     chunk      int          NOT NULL,
+     boundaries char(64)     NOT NULL,
+     this_crc   char(40)     NOT NULL,
+     this_cnt   int          NOT NULL,
+     master_crc char(40)         NULL,
+     master_cnt int              NULL,
+     ts         timestamp    NOT NULL,
+     PRIMARY KEY (db, tbl, chunk)
+  );
+
+
+
+nohup ./mk-table-checksum --emptyrepltbl --replicate=repl.checksum --algorithm=BIT_XOR \
+h=robinson.star.bnl.gov,P=3336,u=root,p=XYZ -d FileCatalog_BNL >> checkrepl.log.txt 2>&1
+
+
+To check the checksum on a given slave host
+ mysql -u root --host <hostname> --port 3336 -pXYZ -e "USE repl; SELECT db, 
+ tbl, chunk, this_cnt-master_cnt AS cnt_diff, this_crc <> master_crc 
+OR ISNULL(master_crc) <> ISNULL(this_crc) AS crc_diff FROM checksum 
+WHERE master_cnt <> this_cnt OR master_crc <> this_crc OR 
+ISNULL(master_crc) <> ISNULL(this_crc);" 
+
+
+To show the differences at a given slave from the master: 
+./mk-table-sync --print --synctomaster --replicate repl.checksum 
+h=<slavehost>,P=3336,u=root,p=XYZ,D=<database>,t=<table>
+
+
+To sync a slave with the master 
+./mk-table-sync --execute --synctomaster --replicate repl.checksum 
+h=<slavehost>,P=3336,u=root,p=XYZ,D=<database>,t=<table>
+
+Example monitoring script:
+http://online.star.bnl.gov/Mon/

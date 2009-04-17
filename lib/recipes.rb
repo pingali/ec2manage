@@ -1,0 +1,15 @@
+
+# load all the files in the recipes 
+require 'lib/recipes/util' 
+require 'lib/recipes/deploy' 
+require 'lib/recipes/db' 
+require 'lib/recipes/dns'
+require 'lib/recipes/ami' 
+require 'lib/recipes/help' 
+require 'lib/recipes/files' 
+require 'lib/recipes/ec2onrails' 
+require 'lib/recipes/setup' 
+require 'lib/recipes/server' 
+require 'lib/recipes/app' 
+require 'lib/recipes/perf' 
+require 'lib/recipes/mail' 

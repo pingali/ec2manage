@@ -1,0 +1,50 @@
+0. Create a free github account 
+Let Venkata or Ganesh know about the account
+
+1. Get started on EC2 
+
+Detailed instructions here 
+https://help.ubuntu.com/community/EC2StartersGuide
+http://docs.amazonwebservices.com/AWSEC2/latest/GettingStartedGuide/
+
+Deploy and use EC2 AMI tools:
+ec2-describe-instances
+ec2-describe-images
+
+2 (Advanced) Deploy and build an AMI 
+
+Follow the instructions from here 
+http://alestic.com/
+
+3. Get familiarized with Rails 
+
+See the Rails screencasts for a quick primer on Rails 
+http://rubyonrails.org/screencasts
+
+4. Get familiar with Capistrano 
+
+See the screen cast here 
+http://railscasts.com/episodes/133-capistrano-tasks
+
+5. Deploy the basic EC2 on rails stacks 
+
+http://ec2onrails.rubyforge.org/
+
+6. Create a volume and instance from the console 
+https://console.aws.amazon.com/
+
+7. Install ruby, rubygems and capistrano
+On ubuntu execute the following
+$ sudo apt-get install ruby rubygems
+$ sudo gem install capistrano
+Note: capistrano is required for executing the cap command in step 8.
+
+8. Look through ec2manage
+
+$ git clone git@github.com:pingali/ec2manage.git 
+$ cd ec2manage
+$ cap -T 
+
+Configure config/hosts.yml with instance name and EBS volume information
+
+$ NAME=<alias-from-hosts.yml> ec2manage:setup:with_fresh_volume

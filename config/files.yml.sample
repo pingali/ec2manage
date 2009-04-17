@@ -1,0 +1,103 @@
+#
+# Directories and files to synchronize from and to EBS 
+# rsync /var/local/ebs_dir => host_location
+# rsync host_dir => /var/local/ebs_location
+
+synchronize: 
+
+  - ebs_dir: /mnt/www
+    ebs_location: /mnt
+    host_dir: /mnt/www
+    host_location: /mnt
+    ownership: app:app
+
+  - ebs_dir: /mnt/www/munin
+    ebs_location: /mnt/www
+    host_dir: /mnt/www/munin
+    host_location: /mnt/www
+    ownership: munin:munin
+
+  - ebs_dir: /mnt/splunk
+    ebs_location: /mnt
+    host_dir: /mnt/splunk
+    host_location: /mnt
+    ownership: splunk:splunk
+
+  - ebs_dir: /etc/mysql
+    ebs_location: /etc
+    host_dir: /etc/mysql
+    host_location: /etc
+    ownership: root:root
+
+  - ebs_dir: /etc/mysql-zrm
+    ebs_location: /etc
+    host_dir: /etc/mysql-zrm
+    host_location: /etc
+    ownership: mysql:mysql 
+
+  - ebs_dir: /etc/apache2
+    ebs_location: /etc
+    host_dir: /etc/apache2
+    host_location: /etc
+    ownership: root:root 
+
+  - ebs_dir: /etc/ec2onrails
+    ebs_location: /etc
+    host_dir: /etc/ec2onrails
+    host_location: /etc
+    ownership: root:root
+
+  - ebs_dir: /etc/ec2manage
+    ebs_location: /etc
+    host_dir: /etc/ec2manage
+    host_location: /etc
+    ownership: root:root
+
+  - ebs_dir: /etc/cron.d
+    ebs_location: /etc
+    host_dir: /etc/cron.d
+    host_location: /etc
+    ownership: root:root
+
+  - ebs_dir: /etc/cron.hourly
+    ebs_location: /etc
+    host_dir: /etc/cron.hourly
+    host_location: /etc
+    ownership: root:root
+
+  - ebs_dir: /etc/cron.daily
+    ebs_location: /etc
+    host_dir: /etc/cron.daily
+    host_location: /etc
+    ownership: root:root
+
+  - ebs_dir: /etc/cron.weekly
+    ebs_location: /etc
+    host_dir: /etc/cron.weekly
+    host_location: /etc
+    ownership: root:root
+
+  - ebs_dir: /etc/cron.monthly
+    ebs_location: /etc
+    host_dir: /etc/cron.monthly
+    host_location: /etc
+    ownership: root:root
+
+  - ebs_dir: /etc/crontab
+    ebs_location: /etc
+    host_dir: /etc/crontab
+    host_location: /etc
+    ownership: root:root
+    
+
+mnt_directories_to_move:
+
+etc_directories_to_move:
+
+
+verify:
+
+  permissions:
+
+    - dir: /mnt/tmp/mysql  
+      ownership: mysql:mysql 

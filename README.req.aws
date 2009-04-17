@@ -1,0 +1,32 @@
+# this document descrives the requirements at AWS before
+# any remote mgmt commands can be issued
+
+1) EC2
+  Number of instances: 1 or more 
+  State : 
+    Instantiated from AWS console 
+    Volume not mounted
+  
+  Commands are run only on one machine at a time.
+
+2) S3
+  Number of buckets: 
+  Names: 
+
+3) EBS
+   One each for each of the hosts 
+
+   There may be standalone volumes as backups.
+
+   Snapshots may be instantiated as volumes for 
+   testing purposes 
+
+4) SQS
+   
+   Use: Application-level log of the transactions
+   that are yet to complete (in a distributed 
+   computing case) 
+
+5) SimpleDB
+ 
+   Use: APplication-level log only for now 

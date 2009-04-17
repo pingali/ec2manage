@@ -1,0 +1,62 @@
+#
+# Specifies:
+#     Keys to access ec2 instance and git 
+#     for each role, all the required settings
+#
+#
+
+keys:
+  - <%= "#{ENV['HOME']}/.ec2/ec2manage-public-site" %>
+  - <%= "#{ENV['HOME']}/.ec2/app-github" %>
+role_assignment:   
+  master: 
+    host: ec2-72-44-60-89.compute-1.amazonaws.com
+    localhost: domU-12-31-38-00-28-B4.compute-1.internal
+    id: 1 
+    roles: 
+      - role: web
+      - role: app 
+      - role: db 
+        volume: vol-0ced0a65
+    dns:
+      - alias: www
+        use: host
+      - alias: admin
+        use: host
+      - alias: dbmaster
+        use: host
+      - alias: dbmaster-int
+        use: localhost  
+
+  slave: 
+    id: 2
+    host: ec2-174-129-121-61.compute-1.amazonaws.com
+    localhost: domU-12-31-39-00-65-45.compute-1.internal
+    roles:
+      - role: web
+      - role: app 
+      - role: db
+        slave: true 
+        master_name: master 
+        volume: vol-9b5fbbf2
+
+  mytest:
+    id: 3
+    host: ec2-67-202-57-172.compute-1.amazonaws.com
+    localhost: domU-12-31-39-00-7D-D5.compute-1.internal
+    roles: 
+      - role: web
+      - role: app 
+      - role: db
+        slave: true 
+        master_name: master 
+        volume: vol-c6bd5aaf
+     
+#---------------------------------------------  
+# Recursively read the secret bundle specification if there is one
+# This is done to avoid putting the information in repository
+#---------------------------------------------  
+
+<% bundle_file = "#{ENV['HOME']}/.ec2/bundle.yml" %>
+<%= File.read(bundle_file) if bundle_file %> 
+

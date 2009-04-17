@@ -1,0 +1,68 @@
+# this file describes the requirements on local machine
+
+1) Gem requirements
+
+  ec2onrails (Skippy's or pingali's version) 
+  https://github.com/skippy/ec2onrails
+
+  
+2) EC2 AMI Tools 
+
+  Installed in user directory 
+  EC2_HOME=${HOME}/ec2-api-tools
+  Add ${EC2_HOME}/bin to the PATH
+ 
+
+2) AWS credentials
+
+  ec2 x509 certificate/key 
+     stored in ~/.ec2 
+     specified in bundle.yml and two environment variables
+
+       EC2_PRIVATE_KEY=${HOME}/.ec2/aws-pvt-key.pem
+       EC2_CERT=${HOME}/.ec2/aws-pub-cert.pem 
+
+  EC2 account, access shared secret key 
+     specified in bundle.yml and s3.yml in ~/.ec2
+
+     example: see config/bundle.yml.sample s3.yml.sample 
+
+  public and private cert/key 
+     keys located either in ~/.ec2/ or ~/.ssh
+     specified in bundle.yml 
+
+  bundle.yml and s3.yml in ~/.ec2
+
+3) Application configuration files
+
+   hosts.yml (in config): 
+   
+        AWS hostnames, roles and DNS aliases. This is used for running
+        the ec2manage management commands. The role assignment has the
+        roles and settings for each host being configured. 
+	
+	role_assignment:
+          master: 
+            host: ec2-182...
+
+        NAME=master cap <command> 	
+	
+
+   dns.yml: 
+   
+	DNS aliases from DNSMadeEasy and corresponding usernames and
+        passwords. This is used for Dynamic DNS updates. 
+
+   bundle.yml (typically in ~/.ec2) 
+
+        AWS certs, keys, access keys, bucket names etc. for rebundling
+        a given instance.
+
+   database.yml (typically in ~/.ec2) 
+
+        This contains the production database access information. This
+        is used during db:migrate.  This management application does
+        not deploy a usable application. So this is mostly 
+	not used. 
+
+

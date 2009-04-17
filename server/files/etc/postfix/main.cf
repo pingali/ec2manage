@@ -1,0 +1,34 @@
+
+# Following Paul Dowman's instructions on setting up the 
+# mailserver
+# http://pauldowman.com/2008/02/17/smtp-mail-from-ec2-web-server-setup/
+
+myhostname = www.myfavoritedomain.com
+mydomain = myfavoritedomain.com
+myorigin = $mydomain
+
+smtpd_banner = $myhostname ESMTP $mail_name
+biff = no
+append_dot_mydomain = yes 
+masquerade_domains = $mydomain 
+
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
+mydestination = localdomain, localhost, localhost.localdomain, localhost
+mynetworks = 127.0.0.0/8
+mailbox_size_limit = 0
+recipient_delimiter = +
+
+# SECURITY NOTE: Listening on all interfaces. Make sure your firewall is
+# configured correctly
+inet_interfaces = all
+
+relayhost = [mail.authsmtp.com]
+smtp_connection_cache_destinations = mail.authsmtp.com
+smtp_sasl_auth_enable = yes
+smtp_sasl_password_maps = static:sh292y1:sdfkjusss
+smtp_sasl_security_options = noanonymous
+
+default_destination_concurrency_limit = 4
+
+soft_bounce = yes

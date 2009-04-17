@@ -1,0 +1,7 @@
+bundle:
+  user: 21332221122
+  cert: <%= "#{ENV['HOME']}/.ec2/cert-jdshfjdhsfjh293283798213.pem" %>
+  key: <%= "#{ENV['HOME']}/.ec2/pk-23849dfjksdjfklj1238.pem" %>
+  aws_access_key: ***REMOVED***
+  aws_secret_access_key:  ***REMOVED***+***REMOVED***
+  bucket_base_name: ami-snapshots
