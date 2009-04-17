@@ -1,0 +1,80 @@
+== EC2Manage Page 
+
+This is bunch of capistrano scripts and configuration files that were
+intended to used in conjunction with ec2onrails gem. 
+
+Note: Elements can be extracted and integrated into ec2onrails or other 
+systems but it is NOT production ready and is not community supported. 
+That is, you are on your own. We intended to extend ec2onrails but never 
+got to that. 
+
+We decided to reimplement the system using poolparty/chef. So
+opensourcing the code for others to look at and use. We have 
+benefited much from working with ec2onrails.
+
+== Contents 
+
+ec2onrails gem provided the basic functionality. This code has a few
+additional things: 
+
+Capistrano commands: 
+
+# Refactored EBS setup code from ec2onrails with different behavior
+  when mounted first time, and mounted again after crash. (lib/recipes/ec2onrails.rb) 
+# Dynamic dns update after configuration (lib/recipes/dns.rb)
+# Initial application deployment (lib/recipes/app.rb)
+# DB helper functions (lib/recipes/db.rb) 
+# AMI bundling after a configuration (lib/recipes/ami.rb) 
+# Simple performance testing (lib/recipes/perf.rb) 
+# Splunk/zmanda custom installation and helpers (lib/recipes/server.rb)
+# Synchoronization of host directories with EBS (lib/recipes/files.rb) 
+# Other helper functions (lib/recipes/deploy.rb) 
+
+
+Configuration files and scripts:
+
+Emergency communication: 
+
+# Emergency email sender (server/files/usr/local/bin/emergency_mail_sender.rb)
+# Post twitter messages from EC2 (server/files/usr/local/ec2onrails/bin/ec2manage_twitter.rb)
+
+AMI management:
+
+# Script to rebundle the deployed image (server/files/usr/local/ec2onrails/bin/rebundle.sh)
+
+Backup management: 
+
+# Script to copy zrm full and incremental backups to S3 (server/files/usr/local/ec2onrails/bin/ec2manage_backup_zrm.rb)
+# Script to run ZRM backup manager with a specific backup set at
+  specified time. Intended to be called from cron
+  (server/files/usr/local/ec2onrails/bin/ec2manage_zrm_scheduler.rb)
+# Script to automount EBS volume if the specification passed in the user-data *UNTESTED* (server/files/usr/local/ec2onrails/bin/automount-ebs.rb)
+# Script to restore from the database *UNTESTED* (server/files/usr/local/ec2onrails/bin/ec2manage_restore_db.rb)
+# Script to generate EBS snapshots (server/files/usr/local/ec2onrails/bin/ec2manage_backup_snapshots.rb)
+
+
+Helpers 
+# Restart the application (server/files/usr/local/ec2onrails/bin/reload_app.sh)
+# God default configuration (server/files/usr/local/ec2onrails/lib/god_helper.rb)
+
+Configuration files: 
+# Splunk (server/files/etc/ec2manage/splunk)
+# Emergency mail configuration (server/files/etc/ec2manage/ec2manage-mail.conf)
+# Twitter configuration (server/files/etc/ec2manage/ec2manage-twitter.conf)
+# Backup configuration (server/files/etc/ec2manage/ec2manage-zrm.conf) 
+# ZRM configuration (server/files/etc/mysql-zrm/)
+# God configuration to keep the applications up and running (server/files/etc/god/)
+# Munin setup for graphing the status (server/files/etc/munin/)
+# Cron jobs for mail server status, log rotation, backup, and application-specific scripts. 
+(server/files/etc/cron.[hourly|daily|weekly|monthly]; server/files/etc/cron.d/ec2onrails)
+# Rightscale mirror for debian (server/files/etc/apt/sources.list)
+# Postfix mailserver configuration (tested with AuthSMTP) (server/files/etc/postfix/main.cf) 
+# Apache configuration for hosting two application - needs more testing - (server/files/etc/apache2)
+
+Sample capistrano settings: 
+
+# S3 Backup settings (config/s3.yml.sample)
+# Settings used to specify the user and location for the AMI bundles (config/bundle.yml.sample)
+# Data that is expected to passed through the instance-specific user-data (config/user-data.yml.example)
+# Files that must be synchronized between the host and the EBS (config/files.yml.sample)
+# Dynamic DNS settings (config/dns.yml.sample)
